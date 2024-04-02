@@ -3,8 +3,10 @@ import { UseAuth } from "../context/AuthContext";
 import { auth, db } from "../../.idx/gc/firebase";
 import { Searchbar } from "./searchbar";
 import { doc, onSnapshot } from "firebase/firestore";
+import { UseChat } from "../context/ChatContext";
 export const Sidebar = () => {
   const { currentUser, logout } = UseAuth();
+  const { dispatch } = UseChat();
   const [chats, setChats] = useState([]);
   useEffect(() => {
     const getChats = () => {
@@ -21,7 +23,9 @@ export const Sidebar = () => {
     };
     currentUser.uid && getChats();
   }, [currentUser.uid]);
-
+  const handleSelect = (user) => {
+    dispatch({ type: "CHANGE_USER", payload: user });
+  };
   return (
     <div className="sidebar">
       <div className="top">
@@ -39,25 +43,33 @@ export const Sidebar = () => {
         <Searchbar />
       </div>
       <div className="bottom-container">
-        {Object.entries(chats)?.map(([chatId, chatData]) => (
-          <div className="single-container" key={chatId}>
-            <div className="chat-info">
-              <div className="left">
-                <img
-                  src={chatData.userInfo.photoURL}
-                  alt={chatData.userInfo.displayName}
-                />
+        {Object.entries(chats)
+          ?.sort((a, b) => a.date - b.date)
+          .map(([chatId, chatData]) => (
+            <div
+              className="single-container"
+              key={chatId}
+              onClick={() => handleSelect(chatData.userInfo)}
+            >
+              <div className="chat-info">
+                <div className="left">
+                  <img
+                    src={chatData.userInfo.photoURL}
+                    alt={chatData.userInfo.displayName}
+                  />
+                </div>
+                <div className="right">
+                  <p className="name">{chatData.userInfo.displayName}</p>
+                  <p className="recent-message">
+                    {chatData?.lastmessage?.text}
+                  </p>
+                </div>
               </div>
-              <div className="right">
-                <p className="name">{chatData.userInfo.displayName}</p>
-                <p className="recent-message">{chatData.userInfo?.text} HEllo</p>
-              </div>
+              <p className="message-time">
+                {/* {chatData.date.toDate().toLocaleTimeString()} */}
+              </p>
             </div>
-            <p className="message-time">
-              {chatData.date.toDate().toLocaleTimeString()}
-            </p>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

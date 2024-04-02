@@ -12,9 +12,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../.idx/gc/firebase";
 import { UseAuth } from "../context/AuthContext";
+import { UseChat } from "../context/ChatContext";
 export const Searchbar = () => {
   const [username, setUsername] = useState("");
-
+  const { dispatch } = UseChat();
   const { currentUser } = UseAuth();
 
   const [searchResults, setSearchResults] = useState([]);
@@ -97,6 +98,7 @@ export const Searchbar = () => {
     } catch (error) {
       console.error("Error updating user-chats document:", error);
     }
+    dispatch({ type: "CHANGE_USER", payload: selectedUser });
   };
   return (
     <div className="searchbar-container">
