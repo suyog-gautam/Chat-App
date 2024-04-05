@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,7 @@ export const Input = () => {
   const [err, setErr] = useState(false);
   const { currentUser } = UseAuth();
   const { data } = UseChat();
-  
+
   const handleSend = async () => {
     if (img) {
       const storageRef = ref(storage, nanoid());
@@ -59,6 +59,17 @@ export const Input = () => {
       });
     }
     await updateDoc(doc(db, "user-chats", currentUser.uid), {
+      [data.chatId + ".lastmessage"]: {
+        text,
+      },
+      [data.chatId + ".date"]: serverTimestamp(),
+      [data.chatId + ".userInfo"]: {
+        uid: data.user.uid,
+        displayName: data.user.displayName,
+        photoURL: data.user.photoURL,
+      },
+    });
+    await updateDoc(doc(db, "user-chats", data.user.uid), {
       [data.chatId + ".lastmessage"]: {
         text,
       },

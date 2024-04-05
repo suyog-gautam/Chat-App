@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 library.add(faVideo, faInfoCircle, faArrowLeft);
 export const Chat = () => {
   const { data } = UseChat();
-  console.log(data)
+ 
 const navigate= useNavigate()
   return (
     <div className="chat">

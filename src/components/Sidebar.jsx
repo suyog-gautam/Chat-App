@@ -54,10 +54,9 @@ export const Sidebar = () => {
       </div>
       <div className="bottom-container">
         {chatArray
-          .sort((a, b) => a.date - b.date)
+          .sort((a, b) => b.date - a.date)
           .map((chatData) => {
-           
-            console.log(chatData); 
+            
             return (
               <div
                 className="single-container"
