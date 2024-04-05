@@ -14,6 +14,7 @@ import { db } from "../../.idx/gc/firebase";
 import { UseAuth } from "../context/AuthContext";
 import { UseChat } from "../context/ChatContext";
 export const Searchbar = () => {
+  let isMobile = window.matchMedia("(max-width: 768px)").matches;
   const [username, setUsername] = useState("");
   const { dispatch } = UseChat();
   const { currentUser } = UseAuth();
@@ -98,7 +99,9 @@ export const Searchbar = () => {
     } catch (error) {
       console.error("Error updating user-chats document:", error);
     }
-    dispatch({ type: "CHANGE_USER", payload: selectedUser });
+    {dispatch({ type: "CHANGE_USER", payload: selectedUser });
+     isMobile && navigate("/chat");}
+   
   };
   return (
     <div className="searchbar-container">

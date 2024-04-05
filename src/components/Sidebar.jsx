@@ -4,7 +4,12 @@ import { auth, db } from "../../.idx/gc/firebase";
 import { Searchbar } from "./searchbar";
 import { doc, onSnapshot } from "firebase/firestore";
 import { UseChat } from "../context/ChatContext";
+import { useNavigate } from "react-router-dom";
+
 export const Sidebar = () => {
+  let isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+  const navigate = useNavigate();
   const { currentUser, logout } = UseAuth();
   const { dispatch } = UseChat();
   const [chats, setChats] = useState([]);
@@ -25,7 +30,12 @@ export const Sidebar = () => {
   }, [currentUser.uid]);
   const handleSelect = (user) => {
     dispatch({ type: "CHANGE_USER", payload: user });
+    {
+      isMobile && navigate("/chat");
+    }
   };
+  let chatArray = Object.values(chats);
+  
   return (
     <div className="sidebar">
       <div className="top">
@@ -43,33 +53,37 @@ export const Sidebar = () => {
         <Searchbar />
       </div>
       <div className="bottom-container">
-        {Object.entries(chats)
-          ?.sort((a, b) => a.date - b.date)
-          .map(([chatId, chatData]) => (
-            <div
-              className="single-container"
-              key={chatId}
-              onClick={() => handleSelect(chatData.userInfo)}
-            >
-              <div className="chat-info">
-                <div className="left">
-                  <img
-                    src={chatData.userInfo.photoURL}
-                    alt={chatData.userInfo.displayName}
-                  />
+        {chatArray
+          .sort((a, b) => a.date - b.date)
+          .map((chatData) => {
+           
+            console.log(chatData); 
+            return (
+              <div
+                className="single-container"
+                key={chatData.date} // Use the index as the key
+                onClick={() => handleSelect(chatData.userInfo)}
+              >
+                <div className="chat-info">
+                  <div className="left">
+                    <img
+                      src={chatData.userInfo?.photoURL}
+                      alt={chatData.userInfo?.displayName}
+                    />
+                  </div>
+                  <div className="right">
+                    <p className="name">{chatData.userInfo?.displayName}</p>
+                    <p className="recent-message">
+                      {chatData?.lastmessage?.text}
+                    </p>
+                  </div>
                 </div>
-                <div className="right">
-                  <p className="name">{chatData.userInfo.displayName}</p>
-                  <p className="recent-message">
-                    {chatData?.lastmessage?.text}
-                  </p>
-                </div>
+                <p className="message-time">
+                  {chatData?.date?.toDate()?.toLocaleTimeString()}{" "}
+                </p>
               </div>
-              <p className="message-time">
-                {/* {chatData.date.toDate().toLocaleTimeString()} */}
-              </p>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );

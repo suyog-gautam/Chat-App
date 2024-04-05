@@ -20,9 +20,7 @@ export const Messages = () => {
     <div className="messages">
       {messages && messages.messages ? (
         messages.messages.map((m) => <Message key={m.id} message={m} />)
-      ) : (
-        <p>No messages yet</p>
-      )}
+      ) : ""}
     </div>
   );
 };

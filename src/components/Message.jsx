@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { UseAuth } from "../context/AuthContext";
 import { UseChat } from "../context/ChatContext";
-
+import { formatDistanceToNow } from "date-fns";
 export const Message = (message) => {
   const { currentUser } = UseAuth();
   const { data } = UseChat();
- const ref= useRef()
+  const ref = useRef();
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -31,7 +31,11 @@ export const Message = (message) => {
       <div className="message-content">
         {message.message.img ? <img src={message.message.img} /> : null}
         <p>{message.message.text} </p>{" "}
-        <span className="message-time">9:12</span>
+        <span className="message-time">
+          {formatDistanceToNow(message.message.date.toDate(), {
+            addSuffix: true,
+          })}
+        </span>
       </div>
     </div>
   );

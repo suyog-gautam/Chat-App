@@ -9,8 +9,11 @@ import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import { sendEmailVerification } from "firebase/auth";
 import { useEffect } from "react";
+import { Chat } from "./components/Chat";
+
 function App() {
   const { currentUser } = UseAuth();
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
   // If user is authenticated but email is not verified, send verification email and redirect to email verification page
   useEffect(() => {
@@ -40,6 +43,13 @@ function App() {
           path="/login"
           element={currentUser ? <Navigate to="/" /> : <Login />}
         />
+        {/* Only redirect to chat page if user is on mobile */}
+        {isMobile && (
+          <Route
+            path="/chat"
+            element={currentUser ? <Chat /> : <Navigate to="/login" />}
+          />
+        )}
         <Route
           path="/signup"
           element={currentUser ? <Navigate to="/" /> : <SignUp />}
