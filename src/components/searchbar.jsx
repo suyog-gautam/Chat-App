@@ -13,8 +13,10 @@ import {
 import { db } from "../../.idx/gc/firebase";
 import { UseAuth } from "../context/AuthContext";
 import { UseChat } from "../context/ChatContext";
+import { useNavigate } from "react-router-dom";
 export const Searchbar = () => {
   let isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const { dispatch } = UseChat();
   const { currentUser } = UseAuth();
@@ -74,6 +76,7 @@ export const Searchbar = () => {
     }
   };
   const handleSelect = async (selectedUser) => {
+    
     const combinedId =
       currentUser.uid > selectedUser.uid
         ? currentUser.uid + selectedUser.uid
@@ -95,13 +98,12 @@ export const Searchbar = () => {
           },
         });
       }
+      dispatch({ type: "CHANGE_USER", payload: selectedUser });
+      isMobile && navigate("/chat");
       setUsername("");
     } catch (error) {
       console.error("Error updating user-chats document:", error);
     }
-    {dispatch({ type: "CHANGE_USER", payload: selectedUser });
-     isMobile && navigate("/chat");}
-   
   };
   return (
     <div className="searchbar-container">
@@ -147,6 +149,7 @@ export const Searchbar = () => {
                 className="search-user"
                 key={result.id}
                 onClick={() => handleSelect(result.data)}
+                
               >
                 <img src={result.data.photoURL} alt={result.data.displayName} />
 

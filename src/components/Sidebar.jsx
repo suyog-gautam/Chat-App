@@ -60,7 +60,7 @@ export const Sidebar = () => {
             return (
               <div
                 className="single-container"
-                key={chatData.date} // Use the index as the key
+                key={chatData.date} 
                 onClick={() => handleSelect(chatData.userInfo)}
               >
                 <div className="chat-info">
