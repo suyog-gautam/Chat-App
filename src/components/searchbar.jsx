@@ -15,7 +15,20 @@ import { UseAuth } from "../context/AuthContext";
 import { UseChat } from "../context/ChatContext";
 import { useNavigate } from "react-router-dom";
 export const Searchbar = () => {
-  let isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 768px)").matches
+  );
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const { dispatch } = UseChat();

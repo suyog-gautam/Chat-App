@@ -7,8 +7,20 @@ import { UseChat } from "../context/ChatContext";
 import { useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
-  let isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 768px)").matches
+  );
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const navigate = useNavigate();
   const { currentUser, logout } = UseAuth();
   const { dispatch } = UseChat();
@@ -35,7 +47,7 @@ export const Sidebar = () => {
     }
   };
   let chatArray = Object.values(chats);
-  
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -56,11 +68,10 @@ export const Sidebar = () => {
         {chatArray
           .sort((a, b) => b.date - a.date)
           .map((chatData) => {
-            
             return (
               <div
                 className="single-container"
-                key={chatData.date} 
+                key={chatData.date}
                 onClick={() => handleSelect(chatData.userInfo)}
               >
                 <div className="chat-info">

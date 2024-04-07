@@ -8,12 +8,25 @@ import { UseAuth } from "./context/AuthContext.jsx";
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import { sendEmailVerification } from "firebase/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Chat } from "./components/Chat";
 
 function App() {
   const { currentUser } = UseAuth();
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 768px)").matches
+  );
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   // If user is authenticated but email is not verified, send verification email and redirect to email verification page
   useEffect(() => {
@@ -22,9 +35,7 @@ function App() {
         try {
           await sendEmailVerification(currentUser);
           console.log("Verification email sent");
-        } catch (error) {
-          console.error("Error sending verification email:", error);
-        }
+        } catch (error) {}
       };
 
       sendVerificationEmail();

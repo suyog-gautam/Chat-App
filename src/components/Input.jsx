@@ -97,6 +97,11 @@ export const Input = () => {
               : `${currentUser.displayName} sent a photo`,
         },
         [data.chatId + ".date"]: serverTimestamp(),
+        [data.chatId + ".userInfo"]: {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
+        },
       });
 
       setText("");
@@ -131,7 +136,7 @@ export const Input = () => {
           }
         }}
       />
-      <span onClick={handleSend}>{isMobile?"Send":"Send Message"}</span>
+      <span onClick={handleSend}>{isMobile ? "Send" : "Send Message"}</span>
     </div>
   );
 };
