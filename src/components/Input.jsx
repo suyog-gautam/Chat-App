@@ -18,66 +18,95 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 library.add(faPaperclip);
 export const Input = () => {
+  let isMobile = window.matchMedia("(max-width: 768px)").matches;
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
   const [err, setErr] = useState(false);
   const { currentUser } = UseAuth();
   const { data } = UseChat();
-
+  const [sending, setSending] = useState(false);
   const handleSend = async () => {
-    if (img) {
-      const storageRef = ref(storage, nanoid());
-      const uploadTask = uploadBytesResumable(storageRef, img);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {},
-        (error) => {
-          setErr(true);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          await updateDoc(doc(db, "chats", data.chatId), {
-            messages: arrayUnion({
-              id: nanoid(),
-              text,
-              img: downloadURL,
-              senderId: currentUser.uid,
-              date: Timestamp.now(),
-            }),
-          });
-        }
-      );
-    } else {
-      await updateDoc(doc(db, "chats", data.chatId), {
-        messages: arrayUnion({
-          id: nanoid(),
-          text,
-          senderId: currentUser.uid,
-          date: Timestamp.now(),
-        }),
-      });
+    if (sending || (!text.trim() && !img)) {
+      return;
     }
-    await updateDoc(doc(db, "user-chats", currentUser.uid), {
-      [data.chatId + ".lastmessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-      [data.chatId + ".userInfo"]: {
-        uid: data.user.uid,
-        displayName: data.user.displayName,
-        photoURL: data.user.photoURL,
-      },
-    });
-    await updateDoc(doc(db, "user-chats", data.user.uid), {
-      [data.chatId + ".lastmessage"]: {
-        text,
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-    setText("");
-    setImg(null);
+
+    setSending(true); // Set sending state to true
+
+    try {
+      if (img) {
+        const storageRef = ref(storage, nanoid());
+        const uploadTask = uploadBytesResumable(storageRef, img);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {},
+          (error) => {
+            setErr(true);
+            setSending(false); // Reset sending state on error
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            await updateDoc(doc(db, "chats", data.chatId), {
+              messages: arrayUnion({
+                id: nanoid(),
+                text,
+                img: downloadURL,
+                senderId: currentUser.uid,
+                date: Timestamp.now(),
+              }),
+            });
+            setSending(false); // Reset sending state on success
+          }
+        );
+      } else {
+        await updateDoc(doc(db, "chats", data.chatId), {
+          messages: arrayUnion({
+            id: nanoid(),
+            text,
+            senderId: currentUser.uid,
+            date: Timestamp.now(),
+          }),
+        });
+        setSending(false); // Reset sending state on success
+      }
+
+      // Update user chats
+      await updateDoc(doc(db, "user-chats", currentUser.uid), {
+        [data.chatId + ".lastmessage"]: {
+          text:
+            text && img
+              ? `You: ${text}`
+              : text
+              ? `You: ${text}`
+              : "You sent a photo",
+        },
+        [data.chatId + ".date"]: serverTimestamp(),
+        [data.chatId + ".userInfo"]: {
+          uid: data.user.uid,
+          displayName: data.user.displayName,
+          photoURL: data.user.photoURL,
+        },
+      });
+      await updateDoc(doc(db, "user-chats", data.user.uid), {
+        [data.chatId + ".lastmessage"]: {
+          text:
+            text && img
+              ? `${text}`
+              : text
+              ? `${text}`
+              : `${currentUser.displayName} sent a photo`,
+        },
+        [data.chatId + ".date"]: serverTimestamp(),
+      });
+
+      setText("");
+      setImg(null);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setSending(false); // Reset sending state on error
+    }
   };
+
   return (
     <div className="input">
       <div className="link-icon">
@@ -96,8 +125,13 @@ export const Input = () => {
         placeholder="Type Your Message Here..."
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSend();
+          }
+        }}
       />
-      <span onClick={handleSend}>Send Message</span>
+      <span onClick={handleSend}>{isMobile?"Send":"Send Message"}</span>
     </div>
   );
 };
