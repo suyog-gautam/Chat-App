@@ -10,8 +10,9 @@ import "./App.css";
 import { sendEmailVerification } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Chat } from "./components/Chat";
-
+import { useTheme } from "./context/ThemeContext";
 function App() {
+  const { darkMode } = useTheme();
   const { currentUser } = UseAuth();
   const [isMobile, setIsMobile] = useState(
     window.matchMedia("(max-width: 768px)").matches
@@ -44,45 +45,47 @@ function App() {
 
   // Render routes
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={currentUser ? <Home /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/login"
-          element={currentUser ? <Navigate to="/" /> : <Login />}
-        />
-        {/* Only redirect to chat page if user is on mobile */}
-        {isMobile && (
+    <div className={darkMode ? "dark" : ""}>
+      <BrowserRouter>
+        <Routes>
           <Route
-            path="/chat"
-            element={currentUser ? <Chat /> : <Navigate to="/login" />}
+            path="/"
+            element={currentUser ? <Home /> : <Navigate to="/login" />}
           />
-        )}
-        <Route
-          path="/signup"
-          element={currentUser ? <Navigate to="/" /> : <SignUp />}
-        />
-        <Route
-          path="/resetpassword"
-          element={currentUser ? <Navigate to="/login" /> : <PasswordReset />}
-        />
-        <Route
-          path="/email-verification"
-          element={
-            currentUser && !currentUser.emailVerified ? (
-              <VerifyEmail />
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        {/* Catch-all route for undefined paths */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/login"
+            element={currentUser ? <Navigate to="/" /> : <Login />}
+          />
+          {/* Only redirect to chat page if user is on mobile */}
+          {isMobile && (
+            <Route
+              path="/chat"
+              element={currentUser ? <Chat /> : <Navigate to="/login" />}
+            />
+          )}
+          <Route
+            path="/signup"
+            element={currentUser ? <Navigate to="/" /> : <SignUp />}
+          />
+          <Route
+            path="/resetpassword"
+            element={currentUser ? <Navigate to="/login" /> : <PasswordReset />}
+          />
+          <Route
+            path="/email-verification"
+            element={
+              currentUser && !currentUser.emailVerified ? (
+                <VerifyEmail />
+              ) : (
+                <Navigate to="/" />
+              )
+            }
+          />
+          {/* Catch-all route for undefined paths */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

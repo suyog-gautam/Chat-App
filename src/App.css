@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
 }
+
 #root {
   margin: 0;
   padding: 0;
@@ -15,7 +16,9 @@
 
   height: 100vh;
 }
-
+.dark {
+  overflow-x: hidden !important;
+}
 .container {
   width: 100%;
   height: 100%;
@@ -456,6 +459,145 @@
 .back-btn:active {
   transform: translateY(-1px);
 }
+/* Dark Mode */
+.dark {
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+.dark .container {
+  border: 1px solid #424242;
+}
+
+.dark .sidebar {
+  background-color: #333333;
+  border-right: 1px solid #424242;
+}
+
+.dark .chat {
+  background-color: #2a2a2a;
+}
+
+.dark .sidebar-nav {
+  border-bottom: 1px solid #424242;
+}
+
+.dark .user-info {
+  color: #fff;
+}
+
+.dark .logout-btn {
+  border-color: #424242;
+  color: #fff;
+}
+
+.dark .searchbar,
+
+.dark .searchbar-input,
+.dark .searchbar-right {
+  background-color: #424242;
+  border: 1px solid #424242;
+  color: #fff;
+}
+
+.dark .search-icon,
+.dark .searchbar-icon {
+  color: #9aa0a6;
+}
+
+.dark .bottom-container.search::-webkit-scrollbar-thumb {
+  background-color: #9bc5ac;
+}
+
+.dark .bottom-container.search::-webkit-scrollbar-track {
+  background-color: #333333;
+}
+
+.dark .bottom-container.search {
+  border-top: 1px solid #424242;
+}
+
+.dark .search-name,
+.dark .recent-message,
+.dark .name,
+.dark .message-time,
+.dark .link-icon {
+  color: #9aa0a6;
+}
+
+.dark .message-content {
+  background-color: #424242;
+  color: #fff;
+}
+
+.dark .message-content .message-time {
+  color: #9aa0a6;
+}
+
+.dark .message.owner .message-content {
+  background-color: #484848;
+}
+
+.dark .message-content img {
+  background-color: #2a2a2a;
+}
+.dark .chatInfo, .dark .input {
+  background-color: #424242;
+}
+.dark .logout-btn{
+  background-color: #1f1f1f;
+}
+.dark .message-box{
+  background-color: #00000073;
+}
+.toggle-button {
+  position: absolute;
+  left: 1%;
+  top: 90%;
+}
+.dark .toggle{
+  background-color: rgb(215, 212, 212);
+}
+.toggle {
+  background-color: #323030;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+
+  line-height: 1;
+}
+
+.inputs {
+  display: none;
+}
+
+.icons {
+  grid-column: 1 / 1;
+  grid-row: 1 / 1;
+  transition: transform 300ms;
+}
+
+.icon--moon {
+  transition-delay: 100ms;
+  color:black ;
+}
+
+.icon--sun {
+  transform: scale(0);
+  color:white;
+}
+
+#switch:checked + .icon--moon {
+  transform: rotate(360deg) scale(0);
+}
+
+#switch:checked ~ .icon--sun {
+  transition-delay: 100ms;
+  transform: scale(1) rotate(360deg);
+}
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -510,4 +652,9 @@
     height: auto; /* Maintain the aspect ratio of the image */
     object-fit: cover; /* Cover the container while maintaining aspect ratio */
   }
+  .toggle-button {
+  position: absolute;
+  left: 80%;
+  top: 90%;
+}
 }
