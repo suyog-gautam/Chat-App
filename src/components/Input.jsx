@@ -118,6 +118,7 @@ export const Input = () => {
         <input
           type="file"
           hidden
+          accept="image/*"
           id="file-input"
           onChange={(e) => setImg(e.target.files[0])}
         />

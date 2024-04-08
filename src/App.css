@@ -249,6 +249,13 @@
   object-fit: cover;
 }
 
+.single-container img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
 .single-container {
   display: flex;
   justify-content: space-between;
@@ -260,6 +267,9 @@
 .chat-info {
   display: flex;
   gap: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .single-container .right {
   margin: 0;
@@ -283,6 +293,8 @@
   color: rgb(97, 96, 96);
   font-size: 0.8rem;
   justify-self: flex-end;
+padding-right:20px;
+  white-space: nowrap;
 }
 .chatInfo {
   height: 50px;
@@ -492,7 +504,6 @@
 }
 
 .dark .searchbar,
-
 .dark .searchbar-input,
 .dark .searchbar-right {
   background-color: #424242;
@@ -541,13 +552,14 @@
 .dark .message-content img {
   background-color: #2a2a2a;
 }
-.dark .chatInfo, .dark .input {
+.dark .chatInfo,
+.dark .input {
   background-color: #424242;
 }
-.dark .logout-btn{
+.dark .logout-btn {
   background-color: #1f1f1f;
 }
-.dark .message-box{
+.dark .message-box {
   background-color: #00000073;
 }
 .toggle-button {
@@ -555,7 +567,7 @@
   left: 1%;
   top: 90%;
 }
-.dark .toggle{
+.dark .toggle {
   background-color: rgb(215, 212, 212);
 }
 .toggle {
@@ -582,12 +594,12 @@
 
 .icon--moon {
   transition-delay: 100ms;
-  color:black ;
+  color: black;
 }
 
 .icon--sun {
   transform: scale(0);
-  color:white;
+  color: white;
 }
 
 #switch:checked + .icon--moon {
@@ -653,8 +665,8 @@
     object-fit: cover; /* Cover the container while maintaining aspect ratio */
   }
   .toggle-button {
-  position: absolute;
-  left: 80%;
-  top: 90%;
-}
+    position: absolute;
+    left: 80%;
+    top: 90%;
+  }
 }
